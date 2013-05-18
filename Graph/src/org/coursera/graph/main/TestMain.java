@@ -1,5 +1,7 @@
-package org.coursera.graph;
+package org.coursera.graph.main;
+
 public class TestMain {
+	
 	public static void main(String ... args) {
 		System.out.println("Hello");
 	}

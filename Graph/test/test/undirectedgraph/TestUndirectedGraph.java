@@ -1,3 +1,5 @@
+package test.undirectedgraph;
+
 import static org.junit.Assert.*;
 
 import java.io.File;

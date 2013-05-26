@@ -1,4 +1,4 @@
-package test.undirectedgraph;
+package test.graph.undirected;
 
 import static org.junit.Assert.*;
 

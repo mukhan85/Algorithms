@@ -1,7 +1,7 @@
 package chapter1;
 
-public class UnionFind {
-	private int [] id;
+public abstract class UnionFind {
+	protected int [] id;
 	public UnionFind(int n) {
 		id = new int[n];
 		for(int i = 0; i < n; ++i) {
@@ -9,20 +9,15 @@ public class UnionFind {
 		}
 	}
 	
-	private int find(int p) {
+	protected int findRoot(int p) {
 		return 0;
 	}
 	
-	public void union(int p, int q) {
-		
-	}
+	abstract public void union(int p, int q);
+	abstract public boolean isConnected (int p, int q);
 	
-	public boolean isConnected (int p, int q) {
-		return false;
-	}
-	
-	private int count() {
-		return 0;
+	protected int count() {
+		return id.length;
 	}
 }
 

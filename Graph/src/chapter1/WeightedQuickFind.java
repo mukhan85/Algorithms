@@ -1,8 +1,8 @@
 package chapter1;
 
 public class WeightedQuickFind extends UnionFind {
-
 	private int [] size;
+
 	public WeightedQuickFind(int n) {
 		super(n);
 		
@@ -40,5 +40,4 @@ public class WeightedQuickFind extends UnionFind {
 		System.out.println(p + " -> " + q + " : " + result);
 		return result;
 	}
-
 }

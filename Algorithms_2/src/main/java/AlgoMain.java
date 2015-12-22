@@ -9,13 +9,11 @@ import java.util.Arrays;
  * Created by mukhan on 18/12/2015.
  */
 
-public class Main {
+public class AlgoMain {
     public static void main(String ... args) throws FileNotFoundException {
         Graph graph = new Graph("tinyGraphInput");
         System.out.println(graph);
-
 //        runDFS(graph);
-
         runBFS(graph);
     }
 

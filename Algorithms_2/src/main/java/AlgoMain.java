@@ -1,6 +1,7 @@
+import kz.graph.api.Digraph;
 import kz.graph.api.Graph;
-import kz.graph.processor.BreadthFirstSearchProcessor;
-import kz.graph.processor.DepthFirstSearchProcessor;
+import kz.graph.processor.undirected.BreadthFirstSearchProcessor;
+import kz.graph.processor.undirected.DepthFirstSearchProcessor;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -11,10 +12,8 @@ import java.util.Arrays;
 
 public class AlgoMain {
     public static void main(String ... args) throws FileNotFoundException {
-        Graph graph = new Graph("tinyGraphInput");
+        Digraph graph = new Digraph("graph_input");
         System.out.println(graph);
-//        runDFS(graph);
-        runBFS(graph);
     }
 
     private static void runBFS(Graph graph) {

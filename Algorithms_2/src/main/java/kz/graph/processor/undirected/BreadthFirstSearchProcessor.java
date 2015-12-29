@@ -1,4 +1,4 @@
-package kz.graph.processor;
+package kz.graph.processor.undirected;
 
 import kz.graph.api.Graph;
 

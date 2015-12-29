@@ -6,91 +6,83 @@ import java.util.*;
  * Created by mmyrzaku on 22/12/2015.
  */
 public class Solution {
+
     public static void main(String... args) {
-//        Scanner input = new Scanner(Solution.class.getClassLoader().getResourceAsStream("input"));
-        Scanner input = new Scanner(System.in);
-        int numTests = input.nextInt();
-        for (int i = 0; i < numTests; i++) {
-            int numVerts = input.nextInt();
-            int numEdges = input.nextInt();
+        Scanner input = new Scanner(Solution.class.getClassLoader().getResourceAsStream("input"));
+//      Scanner input = new Scanner(System.in);
 
-            Graph graph = new Graph(numVerts, numEdges);
-            for (int j = 0; j < numEdges; j++) {
-                int fromVert = input.nextInt() - 1;
-                int toVert = input.nextInt() - 1;
-                graph.addEdge(fromVert, toVert);
-            }
+        Solution sol = new Solution();
+        UndirectedGraphNode root = new UndirectedGraphNode(1);
+        root.neighbors.add(new UndirectedGraphNode(2));
 
-            int startVert = input.nextInt() - 1;
-            graph.printShortestPaths(startVert);
-        }
+        UndirectedGraphNode cloned = sol.cloneGraph(root);
+        System.out.println(cloned.neighbors.get(0) == root.neighbors.get(0));
+
         input.close();
     }
-}
 
-class Graph {
-    private final int numVerts;
-    private final int numEdges;
-    private final int[] distTo;
-    private final boolean[] visited;
-    private final Map<Integer, List<Integer>> adjList;
-
-    private final Queue<Integer> queue = new LinkedList<>();
-
-    public Graph(int numVerts, int numEdges) {
-        this.numVerts = numVerts;
-        this.numEdges = numEdges;
-        this.adjList = new HashMap<>();
-        this.distTo = new int[numVerts];
-        this.visited = new boolean[numVerts];
-        initGraph();
+    public UndirectedGraphNode cloneDfsGraph(UndirectedGraphNode node) {
+        Map<UndirectedGraphNode, UndirectedGraphNode> map = new HashMap<>();
+        return cloneGraphHelper(map, node);
     }
 
-    private void initGraph() {
-        for (int i = 0; i < numVerts; i++) {
-            this.adjList.put(i, new ArrayList<>());
-            this.distTo[i] = -1;
+    private UndirectedGraphNode cloneGraphHelper(Map<UndirectedGraphNode, UndirectedGraphNode> map, UndirectedGraphNode node) {
+        if (node == null) {
+            return null;
         }
+
+        UndirectedGraphNode copy = new UndirectedGraphNode(node.label);
+        map.put(node, copy);
+
+        for (UndirectedGraphNode nei : node.neighbors) {
+            if (!map.containsKey(nei)) {
+                cloneGraphHelper(map, nei);
+            }
+            copy.neighbors.add(map.get(nei));
+        }
+
+        return copy;
     }
 
-    public void addEdge(Integer fromVert, Integer toVert) {
-        getAdjList(fromVert).add(toVert);
-        getAdjList(toVert).add(fromVert);
-    }
+    Map<UndirectedGraphNode, UndirectedGraphNode> originalToCopy = new HashMap<>();
 
-    public List<Integer> getAdjList(Integer fromVert) {
-        return this.adjList.get(fromVert);
-    }
+    public UndirectedGraphNode cloneGraph(UndirectedGraphNode root) {
+        if(root == null) {
+            return null;
+        }
 
-    public void bfs(Integer sourceVert) {
-        visited[sourceVert] = true;
-        this.queue.add(sourceVert);
+        UndirectedGraphNode rootCopy = new UndirectedGraphNode(root.label);
+        originalToCopy.put(root, rootCopy);
+
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        queue.add(root);
 
         while(!queue.isEmpty()) {
-            Integer nextVert = queue.poll();
-            for(Integer eachAdjVert : getAdjList(nextVert)) {
-                if(!visited[eachAdjVert]) {
-                    visited[eachAdjVert] = true;
-                    if(distTo[nextVert] == -1) {
-                        distTo[nextVert] = 0;
-                    }
-                    distTo[eachAdjVert] = distTo[nextVert] + EDGE_LENGTH;
-                    queue.add(eachAdjVert);
+            UndirectedGraphNode currentNode = queue.poll();
+
+            for(UndirectedGraphNode eachNeighbor : currentNode.neighbors) {
+                if(originalToCopy.containsKey(eachNeighbor)) {
+                    originalToCopy.get(eachNeighbor).neighbors.add(originalToCopy.get(eachNeighbor));
+                } else {
+                    UndirectedGraphNode neighborCopy = new UndirectedGraphNode(eachNeighbor.label);
+                    originalToCopy.put(eachNeighbor, neighborCopy);
+                    originalToCopy.get(currentNode).neighbors.add(neighborCopy);
+                    queue.add(eachNeighbor);
                 }
             }
         }
+
+        return rootCopy;
     }
+}
 
-    public void printShortestPaths(int startVert) {
-        bfs(startVert);
+class UndirectedGraphNode {
 
-        for (int i = 0; i < numVerts; i++) {
-            if(i != startVert) {
-                System.out.print(distTo[i] + " ");
-            }
-        }
-        System.out.println();
+    int label;
+    List<UndirectedGraphNode> neighbors;
+
+    UndirectedGraphNode(int x) {
+        label = x;
+        neighbors = new ArrayList<>();
     }
-
-    private final int EDGE_LENGTH = 6;
 }

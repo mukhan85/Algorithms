@@ -16,16 +16,25 @@ public class TopologicalSortProcessor {
     public TopologicalSortProcessor(Digraph graph) {
         this.graph = graph;
         this.marked = new boolean[graph.getNumVerts()];
+
+        this.reversePost = new Stack<>();
+        for (int i = 0; i < graph.getNumVerts(); i++) {
+            if(!marked[i]) {
+                dfs(i);
+            }
+        }
     }
 
     private void dfs(Integer source) {
         marked[source] = true;
+
         for(Integer eachAdjVert : graph.getAdjList(source)) {
             if(!marked[eachAdjVert]) {
                 dfs(eachAdjVert);
             }
-            reversePost.push(source);
         }
+
+        reversePost.push(source);
     }
 
     public Iterable<Integer> reversePost() {

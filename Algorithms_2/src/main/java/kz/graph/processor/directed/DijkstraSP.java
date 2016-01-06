@@ -25,29 +25,27 @@ public class DijkstraSP {
         Arrays.fill(this.shortestDist, INF);
         this.shortestDist[this.sourceVert] = 0;
 
-        PriorityQueue<WeightedDirectedEdge> sortedDistanceQueue = new PriorityQueue<>(graph.getNumEdges(), new Comparator<WeightedDirectedEdge>() {
-            @Override public int compare(WeightedDirectedEdge o1, WeightedDirectedEdge o2) {
+        Queue<WeightedNeighbourVertex> sortedDistanceQueue = new PriorityQueue<>(graph.getNumEdges(), new Comparator<WeightedNeighbourVertex>() {
+            @Override public int compare(WeightedNeighbourVertex o1, WeightedNeighbourVertex o2) {
                 return o1.getWeight() - o2.getWeight();
             }});
 
-        sortedDistanceQueue.add(new WeightedDirectedEdge(this.sourceVert, this.sourceVert, 0));
+        sortedDistanceQueue.add(new WeightedNeighbourVertex(this.sourceVert, 0));
+
         while (!sortedDistanceQueue.isEmpty()) {
-            WeightedDirectedEdge currentEdge = sortedDistanceQueue.poll();
+            WeightedNeighbourVertex fromVert = sortedDistanceQueue.poll();
+            Integer fromVertId = fromVert.getVertId();
 
-            if (shortestDist[currentEdge.getToVert()] < shortestDist[currentEdge.getFromVert()] + currentEdge.getWeight()) {
-                System.out.println("Skipping : " + currentEdge);
-                continue;
-            }
+            for (WeightedNeighbourVertex eachAdjVert : graph.getAdjList(fromVert.getVertId())) {
+                Integer adjVertId = eachAdjVert.getVertId();
+                Integer distance = eachAdjVert.getWeight();
 
-            for (WeightedDirectedEdge eachAjdEdge : graph.getAdjList(currentEdge.getToVert())) {
-                if(shortestDist[eachAjdEdge.getToVert()] > shortestDist[currentEdge.getFromVert()] + eachAjdEdge.getWeight()) {
-                    pathTo[eachAjdEdge.getToVert()] = currentEdge.getFromVert();
-                    shortestDist[eachAjdEdge.getToVert()] = shortestDist[currentEdge.getFromVert()] + eachAjdEdge.getWeight();
-                    WeightedDirectedEdge relaxedEdge = new WeightedDirectedEdge(currentEdge.getFromVert(), eachAjdEdge.getToVert(), shortestDist[eachAjdEdge.getToVert()]);
-                    System.out.println("Adding : " + relaxedEdge);
-                    sortedDistanceQueue.add(relaxedEdge);
-                } else {
-                    System.out.println("already have shorter path: " + eachAjdEdge);
+                if(shortestDist[adjVertId] > shortestDist[fromVertId] + distance) {
+                    shortestDist[adjVertId] = shortestDist[fromVertId] + distance;
+                    pathTo[adjVertId] = fromVertId;
+                    WeightedNeighbourVertex relaxedVert = new WeightedNeighbourVertex(adjVertId, shortestDist[adjVertId]);
+
+                    sortedDistanceQueue.add(relaxedVert);
                 }
             }
         }
@@ -59,7 +57,12 @@ public class DijkstraSP {
         graph.printGraph();
 
         DijkstraSP dijkstraProcesor = new DijkstraSP(graph);
-        System.out.println(Arrays.toString(dijkstraProcesor.getShortestDistances()));
+        int[] distance = dijkstraProcesor.getShortestDistances();
+
+        for (int i = 0; i < distance.length; i++) {
+            System.out.printf("(%d -> %d): %d\n", graph.getSourceVert(), i, distance[i]);
+        }
+
         System.out.println(Arrays.toString(dijkstraProcesor.getPaths()));
         input.close();
     }
@@ -98,7 +101,7 @@ class WeightedDigraph {
     private final Integer numEdges;
     private final Integer sourceVert;
 
-    private final Map<Integer, List<WeightedDirectedEdge>> adjList;
+    private final Map<Integer, List<WeightedNeighbourVertex>> adjList;
 
     public WeightedDigraph(Integer numVerts, Integer numEdges, Integer sourceVert) {
         this.numVerts = numVerts;
@@ -106,15 +109,15 @@ class WeightedDigraph {
         this.sourceVert = sourceVert;
         this.adjList = new HashMap<>(numVerts);
         for (int eachVert = 0; eachVert < numVerts; eachVert++) {
-            this.adjList.put(eachVert, new ArrayList<WeightedDirectedEdge>());
+            this.adjList.put(eachVert, new ArrayList<>());
         }
     }
 
     public void addEdge(Integer fromVert, Integer toVert, Integer weigth) {
-        this.adjList.get(fromVert).add(new WeightedDirectedEdge(fromVert, toVert, weigth));
+        this.adjList.get(fromVert).add(new WeightedNeighbourVertex(toVert, weigth));
     }
 
-    public List<WeightedDirectedEdge> getAdjList(Integer fromVert) {
+    public List<WeightedNeighbourVertex> getAdjList(Integer fromVert) {
         return  this.adjList.get(fromVert);
     }
 
@@ -131,29 +134,31 @@ class WeightedDigraph {
     }
 
     public void printGraph() {
-        for (Integer eachVert : adjList.keySet()) {
-            System.out.print(eachVert + " : ");
-            for (WeightedDirectedEdge eachAdjEdge : adjList.get(eachVert)) {
-                System.out.print(eachAdjEdge + " -> ");
+        for (int i = 0; i < numVerts; i++) {
+            System.out.print(i + " : ");
+            for (int j = 0; j < this.adjList.get(i).size() - 1; j++) {
+                System.out.print(this.adjList.get(i).get(j) + " -> ");
             }
-            System.out.println();
+
+            if(!this.adjList.get(i).isEmpty()) {
+                System.out.println(this.adjList.get(i).get(adjList.get(i).size() - 1));
+            } else {
+                System.out.println("()");
+            }
         }
     }
 }
 
-class WeightedDirectedEdge {
-
-    private final Integer fromVert;
+class WeightedNeighbourVertex {
     private final Integer toVert;
     private final Integer weight;
 
-    public WeightedDirectedEdge(Integer fromVert, Integer toVert, Integer weight) {
-        this.fromVert = fromVert;
+    public WeightedNeighbourVertex(Integer toVert, Integer weight) {
         this.toVert = toVert;
         this.weight = weight;
     }
 
-    public Integer getToVert() {
+    public Integer getVertId() {
         return toVert;
     }
 
@@ -161,13 +166,9 @@ class WeightedDirectedEdge {
         return weight;
     }
 
-    public Integer getFromVert() {
-        return fromVert;
-    }
-
     @Override
     public String toString() {
-        return "{" + fromVert + " -> " + toVert + ":" + weight + "}";
+        return "(" + toVert + ", " + weight + ")";
     }
 
     @Override
@@ -175,18 +176,15 @@ class WeightedDirectedEdge {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        WeightedDirectedEdge that = (WeightedDirectedEdge) o;
+        WeightedNeighbourVertex that = (WeightedNeighbourVertex) o;
 
-        if (fromVert != null ? !fromVert.equals(that.fromVert) : that.fromVert != null) return false;
         if (toVert != null ? !toVert.equals(that.toVert) : that.toVert != null) return false;
         return weight != null ? weight.equals(that.weight) : that.weight == null;
-
     }
 
     @Override
     public int hashCode() {
-        int result = fromVert != null ? fromVert.hashCode() : 0;
-        result = 31 * result + (toVert != null ? toVert.hashCode() : 0);
+        int result = toVert != null ? toVert.hashCode() : 0;
         result = 31 * result + (weight != null ? weight.hashCode() : 0);
         return result;
     }

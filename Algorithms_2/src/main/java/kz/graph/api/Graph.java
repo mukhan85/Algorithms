@@ -9,7 +9,7 @@ public class Graph {
 
     private int numVerts;
     private int numEdges;
-    private Map<Integer, List<Integer>> adjList;
+    private Map<Integer, ArrayList<Integer>> adjList;
 
     public Graph(int numVerts) {
         this.numVerts = numVerts;
@@ -19,7 +19,7 @@ public class Graph {
     private void initAdjList(int numVerts) {
         this.adjList = new HashMap<>();
         for (int i = 0; i < numVerts; i++) {
-            this.adjList.put(i, new ArrayList<>());
+            this.adjList.put(i, new ArrayList<Integer>());
         }
     }
 
@@ -40,12 +40,12 @@ public class Graph {
 
     public void addEdge(Integer fromVert, Integer toVert) {
         if(this.adjList.get(fromVert) == null) {
-            this.adjList.put(fromVert, new ArrayList<>());
+            this.adjList.put(fromVert, new ArrayList<Integer>());
         }
         this.adjList.get(fromVert).add(toVert);
 
         if(this.adjList.get(toVert) == null) {
-            this.adjList.put(toVert, new ArrayList<>());
+            this.adjList.put(toVert, new ArrayList<Integer>());
         }
         this.adjList.get(toVert).add(fromVert);
     }

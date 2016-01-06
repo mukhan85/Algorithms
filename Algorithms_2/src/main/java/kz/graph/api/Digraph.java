@@ -12,7 +12,7 @@ public class Digraph {
 
     private int numEdges;
     private int numVerts;
-    private Map<Integer, List<Integer>> adjList;
+    private Map<Integer, ArrayList<Integer>> adjList;
 
     public Digraph(String fileName) {
         Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(fileName));
@@ -30,7 +30,7 @@ public class Digraph {
 
     private void initGraph() {
         for (int i = 0; i < this.numVerts; i++) {
-            adjList.put(i, new ArrayList<>());
+            adjList.put(i, new ArrayList<Integer>());
         }
     }
 

@@ -109,7 +109,7 @@ class WeightedDigraph {
         this.sourceVert = sourceVert;
         this.adjList = new HashMap<>(numVerts);
         for (int eachVert = 0; eachVert < numVerts; eachVert++) {
-            this.adjList.put(eachVert, new ArrayList<>());
+            this.adjList.put(eachVert, new ArrayList<WeightedNeighbourVertex>());
         }
     }
 

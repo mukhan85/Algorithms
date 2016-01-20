@@ -2,6 +2,7 @@ package chapter1;
 
 public abstract class UnionFind {
 	protected int [] id;
+
 	public UnionFind(int n) {
 		id = new int[n];
 		for(int i = 0; i < n; ++i) {

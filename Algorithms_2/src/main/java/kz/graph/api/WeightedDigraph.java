@@ -17,7 +17,7 @@ public class WeightedDigraph {
         this.numVerts = numVerts;
         this.adjList = new HashMap<>();
         for (int i = 0; i < numVerts; i++) {
-            this.adjList.put(i, new ArrayList<>());
+            this.adjList.put(i, new ArrayList<WeightedEdge>());
         }
     }
 

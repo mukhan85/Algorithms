@@ -1,0 +1,21 @@
+/**
+*  == Pseudo code ==
+* bool solve(configuration conf) {
+*     mark conf as used
+*
+*     if(no more choices) { // Base case.
+*         return conf is goal state
+*     }
+*
+*     for(each available choice) {
+*         try one of VALID choices X;
+*         ok = solve(conf with choice X made);
+*         if(ok) {
+*             return true;
+*         } else {
+*             unmake choice X;
+*         }
+*     }
+*     return false;
+* }
+*/

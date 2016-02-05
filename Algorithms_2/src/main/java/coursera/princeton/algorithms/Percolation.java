@@ -6,6 +6,7 @@ import java.util.Arrays;
  * Created by mmyrzaku on 01/02/2016.
  */
 public class Percolation {
+
     public static final int BLOCKED = 0;
     public static final int EMPTY_OPEN = 1;
     public static final int FULL_OPEN = 2;

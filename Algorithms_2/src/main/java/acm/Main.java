@@ -1,4 +1,4 @@
-package kz.graph.acm;
+package acm;
 
 import java.util.Scanner;
 

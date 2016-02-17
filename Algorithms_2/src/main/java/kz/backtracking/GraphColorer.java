@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 /**
  * Input:
- * 1) A 2D array graph[V][V] where V is the number of vertices in graph and graph[V][V] is adjacency matrix
+ * 1) A 2D array graph[numVerts][numVerts] where numVerts is the number of vertices in graph and graph[numVerts][numVerts] is adjacency matrix
  * representation of the graph. A value graph[i][j] is 1 if there is a
  * direct edge from i to j, otherwise graph[i][j] is 0.
  * <p>
  * 2) An integer m which is maximum number of colors that can be used.
  * <p>
  * Output:
- * An array color[V] that should have numbers from 1 to m. color[i] should represent
+ * An array color[numVerts] that should have numbers from 1 to m. color[i] should represent
  * the color assigned to the ith vertex. The code should also return false
  * if the graph cannot be colored with m colors.
  */

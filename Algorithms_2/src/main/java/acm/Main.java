@@ -5,41 +5,101 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-//        Scanner input = new Scanner(Main.class.getClassLoader().getResourceAsStream("input"));
-      Scanner input = new Scanner(System.in);
-        while (input.hasNextInt()) {
-            int size = input.nextInt();
-            int[] prices = new int[size];
-            for (int i = 0; i < size; i++) {
-                prices[i] = input.nextInt();
-            }
-            int total = input.nextInt();
-            solve(total, prices);
-        }
+        Scanner input = new Scanner(Main.class.getClassLoader().getResourceAsStream("input"));
+//      Scanner input = new Scanner(System.in);
+
+        TreeNode left = new TreeNode(5);
+        TreeNode right = new TreeNode(16, new TreeNode(12), new TreeNode(30));
+        TreeNode root = new TreeNode(10, left, right);
+        System.out.println(minDiff(root));
+
         input.close();
     }
 
-    private static void solve(int total, int[] prices) {
-        int first = 0;
-        int second = Integer.MAX_VALUE;
-        int solFirst = 0, solSecond = Integer.MAX_VALUE;
+    private static int minDiff(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
 
-        for (int i = 0; i < prices.length; i++) {
-            first = prices[i];
-            for (int j = i + 1; j < prices.length; j++) {
-                second = prices[j];
-                if (first + second == total && Math.abs(first - second) < Math.abs(solFirst - solSecond)) {
-                    solFirst = first;
-                    solSecond = second;
-                }
+        int min = Integer.MAX_VALUE;
+        TreeNode current = root;
+
+        while (current != null) {
+            int leftNode = getLeftClosest(root.left);
+            if (Math.abs(leftNode - root.data) < min) {
+                min = Math.abs(leftNode - root.data);
+            }
+            current = current.left;
+        }
+
+        current = root;
+        while (current != null) {
+            int rightNode = getRightClosest(root.right);
+            if (Math.abs(root.data - rightNode) < min) {
+                min = Math.abs(root.data - rightNode);
+            }
+            current = current.right;
+        }
+
+        min = Math.min(getMinFromLeft(root), getMinFromRight(root));
+
+        return min;
+    }
+
+    private static int getRightClosest(TreeNode right) {
+        TreeNode pointer = right;
+        int result = pointer.data;
+        while (pointer != null) {
+            pointer = pointer.left;
+            if (pointer != null) {
+                result = pointer.data;
             }
         }
 
-        if (solFirst < solSecond) {
-            System.out.printf("Peter should buy books whose prices are %d and %d.\n", solFirst, solSecond);
-        } else {
-            System.out.printf("Peter should buy books whose prices are %d and %d.\n", solSecond, solFirst);
+        return result;
+    }
+
+    private static int getLeftClosest(TreeNode left) {
+        TreeNode pointer = left;
+        int result = pointer.data;
+        while (pointer != null) {
+            pointer = pointer.right;
+            if (pointer != null) {
+                result = pointer.data;
+            }
         }
-        System.out.println();
+
+        return result;
+    }
+
+    private static void runServerFarmTest() {
+        int[] jobs = {15, 30, 15, 5, 10};
+        int numServers = 3;
+        System.out.println(serverFarm(jobs, numServers));
+    }
+
+    public static int[][] serverFarm(int[] jobs, int servers) {
+        return null;
+    }
+}
+
+class TreeNode {
+    int data;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode(int data) {
+        this(data, null, null);
+    }
+
+    public TreeNode(int data, TreeNode left, TreeNode right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + data + ", left=" + left + ", right=" + right +"}";
     }
 }
